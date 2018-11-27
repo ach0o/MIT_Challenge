@@ -1,4 +1,4 @@
-from subj_6_0001 import ps0
+import ps0
 
 
 def test_power_func():

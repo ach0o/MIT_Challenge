@@ -1,4 +1,4 @@
-from subj_6_0001 import ps1c
+import ps1c
 
 
 def test_func_get_savings():

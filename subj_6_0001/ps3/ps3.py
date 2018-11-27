@@ -29,7 +29,7 @@ SCRABBLE_LETTER_VALUES = {
 # Helper code
 # (you don't need to understand this helper code)
 
-WORDLIST_FILENAME = "ps3_words.txt"
+WORDLIST_FILENAME = "words.txt"
 
 
 def load_words():

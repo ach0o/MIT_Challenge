@@ -19,7 +19,7 @@ import random
 import string
 
 
-WORDLIST_FILENAME = "ps2_words.txt"
+WORDLIST_FILENAME = "words.txt"
 
 
 def load_words():

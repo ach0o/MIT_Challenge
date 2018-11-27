@@ -1,4 +1,4 @@
-from subj_6_0001 import ps1b
+import ps1b
 
 
 def test_func_months_to_save():

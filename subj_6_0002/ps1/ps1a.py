@@ -112,25 +112,21 @@ def brute_force_cow_transport(cows, limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    memo = {}
     all_trip_parts = get_partitions(cows)
 
     def is_trip_valid(trip, memo={}):
         for t in trip:
-            if tuple(t) in memo:
-                continue
             weight = sum([cows[name] for name in t])
-            if weight <= limit:
-                memo[tuple(t)] = weight
-            else:
+            if weight > limit:
                 return False
         return True
 
     result = []
     for trip_parts in all_trip_parts:
-        if is_trip_valid(trip_parts, memo) \
+        if is_trip_valid(trip_parts) \
                 and (not result or len(trip_parts) < len(result)):
             result = trip_parts
+
     return result
 
 # Problem 4
@@ -150,7 +146,6 @@ def compare_cow_transport_algorithms():
     Does not return anything.
     """
 
-    import time
     st = time.time()
     res = greedy_cow_transport(load_cows('ps1_cow_data.txt'))
     print(f'[GREEDY] needs to travel {len(res)} times:\n', res)
@@ -161,6 +156,7 @@ def compare_cow_transport_algorithms():
     res = brute_force_cow_transport(load_cows('ps1_cow_data.txt'))
     print(f'[BRUTE FORCE] needs to travel {len(res)} times:\n', res)
     print(time.time() - st)
+
 
 if __name__ == '__main__':
     compare_cow_transport_algorithms()

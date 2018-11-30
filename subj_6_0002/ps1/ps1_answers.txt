@@ -1,0 +1,17 @@
+1. What were your results from `compare_cow_transport_algorithms`? Which algorithm runs faster? Why?
+    Results:
+        [GREEDY] needs to travel 6 times:
+         [['Maggie', 'Herman'], ['Betsy'], ['Oreo', 'Moo Moo'], ['Milkshake', 'Millie', 'Lola'], ['Florence'], ['Henrietta']]
+        0.0003540515899658203
+
+        [BRUTE FORCE] needs to travel 5 times:
+         [['Henrietta'], ['Herman', 'Maggie'], ['Oreo', 'Milkshake', 'Florence'], ['Betsy'], ['Lola', 'Millie', 'Moo Moo']]
+        0.8161978721618652
+
+    According to the results from the function, the greedy algorithm was faster than the brute force algorithm. The greedy algorithm just focuses on reaching the local optimal solution to the problem; it does not bother to look up solutions globally. So it only deals with whatever comes in first. On the other hand, the brute force algorithm finds all possible solutions and compare them to check the best solution. The computational complexity is much higher(O(2^n)), in return causes more time.
+
+2. Does the greedy algorithm return the optimal solution? Why/Why not?
+    It may or may not return the optimal solution, however most like no because it does not guarantee the optimal solution. The greedy algorithm finds the local optimal solution at the given circumstances/from whatever is given at first.
+
+3. Does the brute force algorithm return the optimal solution? Why/Why not?
+    It does return the optimal solution because it goes over all the possible solutions and check for any constraints/limitations then compare them for more optimized solution. 

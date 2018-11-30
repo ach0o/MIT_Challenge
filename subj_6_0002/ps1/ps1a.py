@@ -4,7 +4,7 @@
 Assignment
 (https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/assignments/)
 
-Problem Set 1
+Problem Set 1A
 
 Solved by achooan
 """

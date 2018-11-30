@@ -1,4 +1,7 @@
+Problem Set 1A
+
 1. What were your results from `compare_cow_transport_algorithms`? Which algorithm runs faster? Why?
+
     Results:
         [GREEDY] needs to travel 6 times:
          [['Maggie', 'Herman'], ['Betsy'], ['Oreo', 'Moo Moo'], ['Milkshake', 'Millie', 'Lola'], ['Florence'], ['Henrietta']]
@@ -10,8 +13,41 @@
 
     According to the results from the function, the greedy algorithm was faster than the brute force algorithm. The greedy algorithm just focuses on reaching the local optimal solution to the problem; it does not bother to look up solutions globally. So it only deals with whatever comes in first. On the other hand, the brute force algorithm finds all possible solutions and compare them to check the best solution. The computational complexity is much higher(O(2^n)), in return causes more time.
 
+
 2. Does the greedy algorithm return the optimal solution? Why/Why not?
+
     It may or may not return the optimal solution, however most like no because it does not guarantee the optimal solution. The greedy algorithm finds the local optimal solution at the given circumstances/from whatever is given at first.
 
+
 3. Does the brute force algorithm return the optimal solution? Why/Why not?
+
     It does return the optimal solution because it goes over all the possible solutions and check for any constraints/limitations then compare them for more optimized solution. 
+
+
+
+=======================================================================================
+
+Problem Set 1B
+
+1. Explain why it would be difficult to use a brute force algorithm to solve this problem if there were 30 different egg weights. You do not need to implement a brute force algorithm in order to answer this.
+
+    With the brute force algorithm, it has to define all possible combination of solutions; the complexity becomes O(30^n) which is a huge number. Then it excludes solutions that go against the constraints. After that process, it chooses one with the minimum number of eggs. So it is not efficient for that case.
+
+
+2. If you were to implement a greedy algorithm for finding the minimum number of eggs needed, what would the objective function be? What would the constraints be? What strategy would your greedy algorithm follow to pick which coins to take? You do not need to implement a greedy algorithm in order to answer this.
+
+    Objective function: 
+        maximize the total weight of eggs with the least number of eggs
+
+    Constraints: 
+        total weight of eggs is less than the target weight
+
+    The strategy I would take is to sort the eggs with the reverse order of weights to meet the objective. If I start with the lighter ones, I would have to add many eggs to the ship. Since the objective is to find the minimum number of eggs, it would be better to start with the heaviest one. I would add the eggs when it weighs less than the remaining target weight, or skip to the lighter eggs. As I add the eggs, I would deduct the weight from the target weight. 
+
+
+3. Will a greedy algorithm always return the optimal solution to this problem? Explain why it is optimal or give an example of when it will not return the optimal solution. Again, you do not need to implement a greedy algorithm in order to answer this.
+
+    I think the greedy algorithm will always return the optimal solution for this problem, because it already starts from the highest point(99 in this problem) and is given the elements to compare in reversed order. As a result, it only has to deduct from what is remaining. Just like this problem, the optimal solution was 9 (25 * 3 + 10 * 2 + 1 * 4) eggs to maximize the total weight to the target weight. The greedy algorithm (sorted reversely by weight) also returns 9 (25 * 3 + 10 * 2 + 1 * 4).
+
+
+

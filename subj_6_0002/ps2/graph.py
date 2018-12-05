@@ -1,8 +1,16 @@
-# 6.0002 Problem Set 5
+"""
+6.0002 Introduction to Computational Thinking and Data Science
+
+Assignment
+(https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/assignments/)
+
+Problem Set 2
+
+Solved by achooan
+"""
+
 # Graph optimization
-# Name:
-# Collaborators:
-# Time:
+
 
 import unittest
 
@@ -10,8 +18,10 @@ import unittest
 # A set of data structures to represent graphs
 #
 
+
 class Node(object):
     """Represents a node in the graph"""
+
     def __init__(self, name):
         self.name = str(name)
 
@@ -39,6 +49,7 @@ class Node(object):
 class Edge(object):
     """Represents an edge in the dictionary. Includes a source and
     a destination."""
+
     def __init__(self, src, dest):
         self.src = src
         self.dest = dest
@@ -55,20 +66,25 @@ class Edge(object):
 
 class WeightedEdge(Edge):
     def __init__(self, src, dest, total_distance, outdoor_distance):
-        pass  # TODO
+        self.src = src
+        self.dest = dest
+        self.total_distance = total_distance
+        self.outdoor_distance = outdoor_distance
 
     def get_total_distance(self):
-        pass  # TODO
+        return self.total_distance
 
     def get_outdoor_distance(self):
-        pass  # TODO
+        return self.outdoor_distance
 
     def __str__(self):
-        pass  # TODO
+        return f'{self.src}->{self.dest} '\
+            f'({self.total_distance}, {self.outdoor_distance})'
 
 
 class Digraph(object):
     """Represents a directed graph of Node and Edge objects"""
+
     def __init__(self):
         self.nodes = set([])
         self.edges = {}  # must be a dict of Node -> list of edges
@@ -90,18 +106,27 @@ class Digraph(object):
     def add_node(self, node):
         """Adds a Node object to the Digraph. Raises a ValueError if it is
         already in the graph."""
-        pass  # TODO
+        if self.has_node(node):
+            raise ValueError
+        else:
+            self.nodes.add(node)
+            self.edges[node] = []
 
     def add_edge(self, edge):
         """Adds an Edge or WeightedEdge instance to the Digraph. Raises a
         ValueError if either of the nodes associated with the edge is not
         in the  graph."""
-        pass  # TODO
+        src, dest = edge.get_source(), edge.get_destination()
+        if not(src in self.nodes and dest in self.nodes):
+            raise ValueError
+        else:
+            self.get_edges_for_node(src).append(edge)
 
 
 # ================================================================
 # Begin tests -- you do not need to modify anything below this line
 # ================================================================
+
 
 class TestGraph(unittest.TestCase):
 

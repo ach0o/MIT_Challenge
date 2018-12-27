@@ -3,8 +3,11 @@ Every man has a list of women ordered by preference
 Every women stands on her balcony waiting for a man to come.
 
 """
+import json
 import random
 from pprint import pprint
+
+from docopt import docopt
 
 
 class Person(object):
@@ -103,7 +106,7 @@ def prepare_ritual(num_of_people=10):
     return men_dict, women_dict
 
 
-def ritual(men, women, debug=False):
+def ritual(men, women, verbose=False):
     day_count = 0
 
     while True:
@@ -137,7 +140,7 @@ def ritual(men, women, debug=False):
                     men[suitor].set_suitor(None)
                     men[suitor].update_favor_list([woman_name])
 
-        if debug:
+        if verbose:
             print('\nDAY {}:'.format(day_count))
             print("== MEN'S LIST ==")
             for prog in sorted(serenade_logs, key=lambda x: int(x[0][1:])):
@@ -151,13 +154,38 @@ def ritual(men, women, debug=False):
 
 
 if __name__ == '__main__':
-    men, women = prepare_ritual(num_of_people=25)
-    print('===== MEN =====')
+    doc = """The Mating Ritual.
+
+    Usage:
+        the_mating_ritual.py (-c COUNT) [-v] [-s FILE]
+
+    Arguments:
+        COUNT   a number of people
+        FILE    optional output file
+
+    Options:
+        -c --count      a number of people
+        -s --save       save results to a txt file
+        -v --verbose    print more text
+    """
+    args = docopt(doc)
+
+    # Create men and women set for a ritual
+    men, women = prepare_ritual(num_of_people=int(args['COUNT']))
+    print('===MEN===')
     pprint(men)
-    print('===== WOMEN =====')
+    print('==WOMEN==')
     pprint(women)
 
-    result, day = ritual(men, women, debug=True)
+    # Execute the ritual
+    result, day = ritual(men, women, verbose=args['--verbose'])
 
-    print('\n===== FINAL COUPLES AFTER {} DAYS ====='.format(day))
-    pprint(sorted(result.items(), key=lambda x: int(x[0][1:])))
+    # Reformat the result
+    result = sorted(result.items(), key=lambda x: int(x[0][1:]))
+    print('\n==STABLE COUPLES AFTER {} DAYS=='.format(day))
+    pprint(dict(result))
+
+    # Save the result
+    if args['--save']:
+        with open('./{}'.format(args['FILE']), 'w') as f:
+            json.dump(dict(result), f)

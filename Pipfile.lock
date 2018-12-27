@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "50eb0a53ebec87b66cdbaceced5e6cbfb486c5558addde41ea537d2e9a56a57d"
+            "sha256": "d55d03cca7038a4f4968fccf8435e98bb8c5eaff8b0a862a16cd50c08664a737"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,12 @@
         ]
     },
     "default": {
+        "docopt": {
+            "hashes": [
+                "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"
+            ],
+            "version": "==0.6.2"
+        },
         "pytz": {
             "hashes": [
                 "sha256:31cb35c89bd7d333cd32c5f278fca91b523b0834369e757f4c5641ea252236ca",

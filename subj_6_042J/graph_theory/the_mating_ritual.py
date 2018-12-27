@@ -1,8 +1,3 @@
-"""
-Every man has a list of women ordered by preference
-Every women stands on her balcony waiting for a man to come.
-
-"""
 import json
 import random
 from pprint import pprint
@@ -21,6 +16,12 @@ class Person(object):
         self.favor_list = favor_list
         self.suitor = None
 
+    def __repr__(self):
+        return str(self.favor_list)
+
+    def __eq__(self, other):
+        return self.name == other
+
     def get_favor_list(self):
         return self.favor_list.copy()
 
@@ -35,16 +36,13 @@ class Person(object):
     def set_suitor(self, name):
         self.suitor = name
 
-    def __str__(self):
-        return str(self.favor_list)
-
-    def __eq__(self, other):
-        return self.name == other
-
 
 class Woman(Person):
     def __init__(self, name: str, favor_list: list):
         super().__init__(name, favor_list)
+
+    def __repr__(self):
+        return super().__repr__()
 
     def make_decision(self, suitors: list):
         """
@@ -55,16 +53,13 @@ class Woman(Person):
         favor_list = self.get_favor_list()
         return favor_list[min([favor_list.index(man) for man in suitors])]
 
-    def __str__(self):
-        return super().__str__()
-
-    def __repr__(self):
-        return super().__str__()
-
 
 class Man(Person):
     def __init__(self, name: str, favor_list: list):
         super().__init__(name, favor_list)
+
+    def __repr__(self):
+        return super().__repr__()
 
     def serenade(self):
         """
@@ -81,12 +76,6 @@ class Man(Person):
             return self.favor_list[0]
 
         return self.suitor
-
-    def __str__(self):
-        return super().__str__()
-
-    def __repr__(self):
-        return super().__str__()
 
 
 def prepare_ritual(num_of_people=10):
@@ -116,6 +105,7 @@ def ritual(men, women, verbose=False):
         if all([w.suitor for w in women.values()]):
             return {w.suitor: w.name for w in women.values()}, day_count
 
+        # Men serenade to his most favorite woman
         for name, man in men.items():
             woman_name = man.serenade()
             serenade_status[woman_name] = serenade_status.get(woman_name, [])
@@ -123,8 +113,8 @@ def ritual(men, women, verbose=False):
 
             serenade_logs.append((name, man.favor_list))
 
+        # Women choose her favorite man
         for woman_name, suitors in serenade_status.items():
-
             woman = women.get(woman_name)
             chosen_man = woman.make_decision(suitors)
             decision_logs.append((woman.name, chosen_man))
@@ -136,7 +126,7 @@ def ritual(men, women, verbose=False):
                     woman.set_suitor(chosen_man)
 
                 else:
-                    # cross out
+                    # cross out the women from his list
                     men[suitor].set_suitor(None)
                     men[suitor].update_favor_list([woman_name])
 
@@ -150,6 +140,7 @@ def ritual(men, women, verbose=False):
             print("== WOMEN'S CHOICE ==")
             for prog in sorted(decision_logs, key=lambda x: int(x[0][1:])):
                 print(prog)
+
         day_count += 1
 
 

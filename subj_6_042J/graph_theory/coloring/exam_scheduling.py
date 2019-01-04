@@ -1,12 +1,19 @@
-from pprint import pprint
+"""
+Exam Scheduling(Graph Coloring) Problem
 
-# TODO: Write Test Cases
+written by @achooan
+"""
+
 
 class Node(object):
+    """
+    A base class for graph nodes
+    """
+
     def __init__(self, name):
         """
         parameters:
-            name(string) - a name of the node
+            name(string) - a name of this node
         """
         self.name = name
 
@@ -14,13 +21,17 @@ class Node(object):
         return self.name == other.name
 
     def __str__(self):
-        return self.name
+        return '{}({})'.format(self.name, self.time_slot)
 
     def __repr__(self):
-        return self.name
+        return '{}({})'.format(self.name, self.time_slot)
 
 
 class Edge(object):
+    """
+    A base class for graph edges
+    """
+
     def __init__(self, src, dst):
         """
         parameters:
@@ -36,15 +47,6 @@ class Edge(object):
     def get_destination(self):
         return self.dst
 
-    def validate_time_slot(self):
-        src_slot, dst_slot = self.src.get_time_slot(), self.dst.get_time_slot()
-        if not(src_slot or dst_slot):
-            # unassigned time slot isn't false
-            return True
-            # raise ValueError('slot is not assigned')
-
-        return src_slot != dst_slot
-
     def __eq__(self, other):
         return {self.src, self.dst} == {other.src, other.dst}
 
@@ -56,7 +58,17 @@ class Edge(object):
 
 
 class Graph(object):
+    """
+    A class that represents a graph and manages nodes and edges
+    """
+
     def __init__(self):
+        """
+        attributes:
+            self.nodes(set[`Node`]) - contains nodes that construct this graph.
+            self.edges(list[`Edge`]) - contains edges that connect the nodes
+                                       in this graph.
+        """
         self.nodes = set()
         self.edges = list()
 
@@ -96,13 +108,6 @@ class Graph(object):
 
         return adj_nodes
 
-    def get_incident_edges(self, node):
-        inc_edges = list()
-        for edge in self.edges:
-            if node in (edge.get_source(), edge.get_destination()):
-                inc_edges.append(edge)
-        return inc_edges
-
     def validate_node_colors(self):
         status = []
         for edge in self.edges:
@@ -115,7 +120,20 @@ class Graph(object):
 
 
 class Exam(Node):
+    """
+    A child class of `Node` class
+    """
+
     def __init__(self, name):
+        """
+        parameters:
+            name(string) - a course name of this exam(node)
+
+        attributes:
+            self.name - a course name of this exam(node)
+            self.time_slot - represents a scheduled time period(a color)
+                             for this exam(node)
+        """
         super().__init__(name)
         self.time_slot = None
 
@@ -132,12 +150,10 @@ class Exam(Node):
         return self.name.__hash__()
 
     def __str__(self):
-        return '{}({})'.format(self.name, self.time_slot)
-        # super().__str__()
+        return super().__str__()
 
     def __repr__(self):
-        return '{}({})'.format(self.name, self.time_slot)
-        # return super().__repr__()
+        return super().__repr__()
 
 
 class Student(object):
@@ -159,75 +175,72 @@ def get_permutations(sequence: list):
         return result
 
 
-def assign_time_slots(graph, node, previous_nodes, previous_slot, slot_list):
+def assign_time_slots(graph, node, previous_slot, slot_list):
     if not node:
+        # Get a node with the highest degree
         degrees = graph.get_degrees()
         max_degree = max(degrees.values())
-        max_degree_nodes = [node for node,
-                            degree in degrees.items() if degree == max_degree]
+        max_degree_nodes = [node for node, degree in degrees.items()
+                            if degree == max_degree]
 
         node = max_degree_nodes[0]
 
     available_slot = slot_list.copy()
     if previous_slot:
+        # Exclude previous slot because adjacent nodes
+        # must not have the same color
         available_slot.remove(previous_slot)
 
     for slot in available_slot:
-        # print('B>>', slot, available_slot)
+
+        if graph.validate_node_colors():
+            # Break if all adjacent nodes have a different color
+            break
 
         node.set_time_slot(slot)
-        ### adj_nodes = graph.get_adjacent_nodes(node, previous_nodes)
         adj_nodes = graph.get_adjacent_nodes(node)
-        # if the node has the same slot
+        # If the node has the same slot
         if any([adj.time_slot == node.time_slot for adj in adj_nodes]):
-            # print('>>>cp1', slot, node, adj_nodes)
             continue
 
-        temp = set([node])
+        temp_colored_nodes = set([node])
 
-        # nothing is assigned to the node
         no_slot_nodes = [adj for adj in adj_nodes if not adj.time_slot]
         if not no_slot_nodes:
-            # print('>>>cp2', slot, node, adj_nodes, previous_nodes, temp)
-            return temp
+            # Return the current node when every adjacent nodes are colored
+            return temp_colored_nodes
 
+        # Iterate nodes w/o color that are adjacent to the 'node',
+        # then, recall this function to assign a new color.
+        # If the new color doesn't cause any conflict, then update the graph
         for idx, ns_node in enumerate(no_slot_nodes):
-            previous_nodes.append(node)
-            assigned_node = assign_time_slots(
-                graph, ns_node, previous_nodes, slot, slot_list)
+            assigned_node = assign_time_slots(graph, ns_node, slot, slot_list)
 
-            # Check if newly assigned node has color conflict
+            # Check if newly assigned node has color conflicts
             # with the adjacent nodes
             conflict_status = []
             for asgn in assigned_node:
                 adjs = graph.get_adjacent_nodes(asgn)
-                conflict_status.append(
-                    all([asgn.time_slot != adnode.time_slot
-                         for adnode in adjs]))
+                conflict_status.append(all([asgn.time_slot != adnode.time_slot
+                                            for adnode in adjs]))
             if all(conflict_status):
-                temp.update(assigned_node)
-            else:
-                temp.update([ns_node])
-            # print(idx, len(no_slot_nodes), node)
+                temp_colored_nodes.update(assigned_node)
 
-        if graph.validate_node_colors():
-            # print('ok')
-            break
-
-    # print('+', graph.nodes, temp)
     return graph.nodes
 
 
-def scheduling(students):
+def scheduling(students, verbose=False):
     graph = Graph()
     nodes = dict()
     edges = list()
+
     for std in students:
         courses = std.get_courses()
         for crs in courses:
             nodes[crs] = nodes.get(crs, Exam(crs))
 
         if len(courses) == 1:
+            # A lonely node may have any color('*')
             nodes[courses[0]].time_slot = '*'
         else:
             temp = [nodes[crs] for crs in courses]
@@ -237,14 +250,23 @@ def scheduling(students):
     graph.add_nodes(list(nodes.values()))
     graph.add_edges(edges)
 
+    if len(graph.nodes) == 1 or len(graph.edges) == 0:
+        # Return all nodes if a graph has only one node
+        # Or if a graph has no edges(it means a graph has all lonely nodes)
+        return graph.nodes
+
     max_colorable = len(graph.nodes) + 1
     available_colors = list(range(1, max_colorable + 1))
-    # print(available_colors)
-
     degrees = graph.get_degrees()
-    print('DEGREES:', degrees)
 
-    return assign_time_slots(graph, None, [], None, available_colors)
+    result = assign_time_slots(graph, None, None, available_colors)
+
+    if verbose:
+        print('NODES: {}\nEDGES: {}'.format(graph.nodes, graph.edges))
+        print('AVAILABLE COLORS(max): {}\nDEGREES: {}\nANSWER:{}'.format(
+            available_colors, degrees, result))
+
+    return result
 
 
 if __name__ == '__main__':
@@ -256,20 +278,6 @@ if __name__ == '__main__':
     st6 = Student(['6.170', '6.003'])
     st7 = Student(['6.042', '6.003'])
     st8 = Student(['6.042', '6.041'])
-    st9 = Student(['6.009'])
-    st10 = Student(['6.042', '6.170'])
-    st11 = Student(['6.044', '6.170'])
 
     happy_case = [st1, st2, st3, st4, st5, st6, st7, st8]
-    case1 = [st1, st2, st3, st4, st5, st6, st7, st8, st10]
-    case2 = [st1, st2, st3, st4, st5, st6, st7, st8, st11, st9]
-
-    pprint(scheduling(happy_case))
-
-    print('=' * 20)
-    print('\n')
-    pprint(scheduling(case1))
-
-    print('=' * 20)
-    print('\n')
-    pprint(scheduling(case2))
+    scheduling(happy_case, verbose=True)

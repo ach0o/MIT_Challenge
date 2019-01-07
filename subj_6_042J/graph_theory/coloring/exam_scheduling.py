@@ -21,10 +21,10 @@ class Node(object):
         return self.name == other.name
 
     def __str__(self):
-        return '{}({})'.format(self.name, self.time_slot)
+        return self.name
 
     def __repr__(self):
-        return '{}({})'.format(self.name, self.time_slot)
+        return self.name
 
 
 class Edge(object):
@@ -150,10 +150,10 @@ class Exam(Node):
         return self.name.__hash__()
 
     def __str__(self):
-        return super().__str__()
+        return '{}({})'.format(self.name, self.time_slot)
 
     def __repr__(self):
-        return super().__repr__()
+        return '{}({})'.format(self.name, self.time_slot)
 
 
 class Student(object):

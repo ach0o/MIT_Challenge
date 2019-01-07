@@ -14,6 +14,8 @@ st9 = es.Student(['6.001', '6.004'])
 st10 = es.Student(['6.002', '6.004'])
 st11 = es.Student(['6.002', '6.005'])
 st12 = es.Student(['6.003', '6.005'])
+st13 = es.Student(['6.001', '6.005'])
+st14 = es.Student(['6.001', '6.006'])
 
 
 def node_with_color(course, color):
@@ -74,3 +76,13 @@ def test_coloring_five_nodes_complete_graph():
 
     # all colors has to be different
     assert len(colors) == len(set(colors))
+
+
+def test_coloring_five_nodes_star_graph():
+    students = [st3, st8, st9, st13, st14]
+    result = list()
+    for std in students:
+        result.append(node_with_color(std.courses[0], '1'))
+        result.append(node_with_color(std.courses[1], '2'))
+
+    assert es.scheduling(students) == set(result)
